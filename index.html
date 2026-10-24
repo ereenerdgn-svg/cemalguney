@@ -1,0 +1,963 @@
+<!-- CEMAL GÜNEY — V9.1 (küçültülmüş sürüm)
+Dosyanın en altındaki script bölümünde CONFIG kısmı var: e-posta, LinkedIn, CV ve fotoğraf bağlantısını oradan değiştir. -->
+<style id="cg-global">
+html, body {
+margin: 0 !important; padding: 0 !important;
+background: #0a0e14 !important; background-color: #0a0e14 !important;
+overflow: hidden !important; height: 100% !important;
+color-scheme: dark;
+}
+header, footer, nav.site-header, nav.main-menu,
+.header-wrapper, .footer-wrapper, .top-bar, .announcement-bar,
+.mobile-bottom-nav, .mobile-menu-platform, .scroll-top, .back-to-top { display: none !important; }
+</style>
+<noscript><p style="color:#fff;background:#0a0e14;padding:20px;font-family:sans-serif">Bu sayfanın görüntülenmesi için JavaScript gereklidir.</p></noscript>
+<template id="cg-template">
+<style>
+:host { all: initial; }
+*, *::before, *::after { box-sizing: border-box; }
+.app {
+--bg: #0a0e14;            --bg-rgb: 10, 14, 20;
+--surface: #0f1620;       --surface-rgb: 15, 22, 32;
+--accent: #4cb4ff;        --accent-rgb: 76, 180, 255;
+--text: #f1f5f9;
+--body: #dbe4ef;
+--muted: #94a3b8;
+--line: rgba(148, 163, 184, 0.22);
+--line-soft: rgba(148, 163, 184, 0.12);
+--font-head: 'Barlow Condensed', 'Arial Narrow', Impact, sans-serif;
+--font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+--gutter: clamp(20px, 6vw, 96px);
+--maxw: 1180px;
+position: absolute; inset: 0;
+overflow-x: hidden; overflow-y: auto;
+background: var(--bg); color: var(--body);
+font-family: var(--font-body); font-size: 19px;
+line-height: 1.75; -webkit-font-smoothing: antialiased;
+scrollbar-width: thin; scrollbar-color: #2a3647 var(--bg);
+overscroll-behavior: contain;
+}
+.app.menu-open { overflow: hidden; }
+::selection { background: var(--accent); color: var(--bg); }
+h1, h2, h3, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+a { color: inherit; }
+[tabindex="-1"]:focus { outline: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 4px; }
+.skip-link {
+position: absolute; left: 16px; top: -60px; z-index: 300;
+background: var(--accent); color: var(--bg); padding: 10px 18px; border-radius: 6px;
+font-weight: 700; text-decoration: none; transition: top 0.2s;
+}
+.skip-link:focus { top: 12px; }
+.grid-bg {
+position: fixed; inset: 0; z-index: 0; pointer-events: none;
+background-image:
+linear-gradient(rgba(var(--accent-rgb), 0.08) 1px, transparent 1px),
+linear-gradient(90deg, rgba(var(--accent-rgb), 0.08) 1px, transparent 1px),
+linear-gradient(rgba(var(--accent-rgb), 0.035) 1px, transparent 1px),
+linear-gradient(90deg, rgba(var(--accent-rgb), 0.035) 1px, transparent 1px);
+background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+}
+#canvas-network { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.vignette {
+position: fixed; inset: 0; z-index: 2; pointer-events: none;
+background:
+linear-gradient(rgba(var(--bg-rgb), 0.34), rgba(var(--bg-rgb), 0.34)),
+radial-gradient(ellipse 130% 90% at 50% 50%, rgba(var(--bg-rgb), 0) 50%, rgba(var(--bg-rgb), 0.6) 100%);
+}
+.cursor-dot, .cursor-outline { display: none; }
+@media (hover: hover) and (pointer: fine) {
+.app, .app * { cursor: none !important; }
+.cursor-dot, .cursor-outline {
+display: block; position: fixed; top: 0; left: 0;
+border-radius: 50%; z-index: 400; pointer-events: none;
+opacity: 0; transition: opacity 0.3s, width 0.2s, height 0.2s, background-color 0.2s;
+will-change: transform;
+}
+.cursor-dot { width: 6px; height: 6px; background: var(--accent); }
+.cursor-outline { width: 40px; height: 40px; border: 1px solid rgba(var(--accent-rgb), 0.55); }
+.app.cursor-on .cursor-dot, .app.cursor-on .cursor-outline { opacity: 1; }
+.app.hovering .cursor-outline { width: 60px; height: 60px; background: rgba(var(--accent-rgb), 0.12); border-color: transparent; }
+}
+.luxury-nav {
+position: sticky; top: 0; z-index: 100;
+height: 76px; margin-bottom: -76px;
+display: flex; justify-content: space-between; align-items: center;
+padding: 0 var(--gutter);
+background: linear-gradient(to bottom, rgba(var(--bg-rgb), 0.95) 0%, rgba(var(--bg-rgb), 0) 100%);
+transition: background 0.3s, border-color 0.3s;
+border-bottom: 1px solid transparent;
+}
+.luxury-nav.scrolled { background: rgba(var(--bg-rgb), 0.94); border-bottom-color: var(--line-soft); }
+.app.menu-open .luxury-nav { background: transparent; border-bottom-color: transparent; }
+.brand-name {
+font-family: var(--font-head); font-size: 2rem; font-weight: 700;
+letter-spacing: 3px; text-transform: uppercase; text-decoration: none; color: var(--text);
+}
+.brand-name span { color: var(--accent); }
+.nav-links { display: flex; gap: 30px; }
+.nav-links a {
+text-decoration: none; font-size: 0.92rem; font-weight: 700;
+text-transform: uppercase; letter-spacing: 1.2px; color: #c4cfdd;
+transition: color 0.3s; padding: 6px 0; position: relative;
+}
+.nav-links a::after {
+content: ''; position: absolute; left: 0; bottom: 0; height: 2px; width: 100%;
+background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--accent); }
+.nav-links a.active::after { transform: scaleX(1); }
+.menu-toggle {
+display: none; width: 44px; height: 44px; padding: 0;
+background: transparent; border: 0; color: var(--text); position: relative; z-index: 120;
+}
+.menu-toggle span { position: absolute; left: 10px; right: 10px; height: 2px; background: var(--text); transition: transform 0.3s, top 0.3s; }
+.menu-toggle span:nth-child(1) { top: 16px; }
+.menu-toggle span:nth-child(2) { top: 26px; }
+.app.menu-open .menu-toggle span:nth-child(1) { top: 21px; transform: rotate(45deg); }
+.app.menu-open .menu-toggle span:nth-child(2) { top: 21px; transform: rotate(-45deg); }
+.mobile-menu {
+position: fixed; inset: 0; z-index: 90; background: rgba(var(--bg-rgb), 0.98);
+display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 26px;
+visibility: hidden; opacity: 0; transition: opacity 0.3s, visibility 0.3s;
+}
+.app.menu-open .mobile-menu { visibility: visible; opacity: 1; }
+.mobile-menu a {
+font-family: var(--font-head); font-size: 2.2rem; font-weight: 600;
+text-transform: uppercase; letter-spacing: 3px; text-decoration: none; color: var(--text);
+}
+.mobile-menu a.active { color: var(--accent); }
+main { position: relative; z-index: 10; width: 100%; display: block; }
+.section { padding: clamp(84px, 13vh, 150px) var(--gutter); position: relative; }
+.wrap { max-width: var(--maxw); margin: 0 auto; }
+.eyebrow {
+display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+font-family: var(--font-mono); font-size: 1rem; font-weight: 700;
+letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
+}
+.eyebrow::after { content: ''; height: 1px; width: 56px; background: rgba(var(--accent-rgb), 0.5); }
+.sec-title {
+font-family: var(--font-head); color: var(--text);
+font-size: clamp(2.6rem, 5.5vw, 4.4rem); font-weight: 700; line-height: 1.05;
+text-transform: uppercase; letter-spacing: 1px; margin-bottom: 48px;
+}
+.hero { min-height: 100vh; min-height: 100svh; display: flex; align-items: center; }
+.hero .wrap { width: 100%; display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+.hero .wrap.has-photo { grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.8fr); }
+.hero-copy {
+position: relative; background: rgba(var(--surface-rgb), 0.93); border: 1px solid var(--line);
+border-left: 4px solid var(--accent); padding: clamp(28px, 4vw, 52px); max-width: 960px;
+}
+.hero-title {
+font-family: var(--font-head); color: var(--text);
+font-size: clamp(3.2rem, 7vw, 6.5rem); font-weight: 700; line-height: 1.02;
+text-transform: uppercase; letter-spacing: 1px;
+}
+.hero-subtitle {
+font-size: clamp(1.1rem, 2.4vw, 1.5rem); font-weight: 700; color: var(--accent);
+letter-spacing: 6px; text-transform: uppercase; margin: 18px 0 30px 0;
+}
+.hero-desc { font-size: 1.3rem; max-width: 680px; line-height: 1.75; color: #e2e9f2; }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.chip {
+display: inline-flex; align-items: center; padding: 7px 14px;
+border: 1px solid var(--line); background: rgba(var(--surface-rgb), 0.9);
+font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; letter-spacing: 0.4px; color: #e2e9f2;
+}
+.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 36px; }
+.portrait { position: relative; aspect-ratio: 4 / 5; max-width: 380px; width: 100%; justify-self: end; background: var(--surface); }
+.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.portrait::before, .portrait::after {
+content: ''; position: absolute; width: 36px; height: 36px; border: 2px solid var(--accent); pointer-events: none;
+}
+.portrait::before { top: -10px; left: -10px; border-right: 0; border-bottom: 0; }
+.portrait::after { bottom: -10px; right: -10px; border-left: 0; border-top: 0; }
+.btn {
+display: inline-flex; align-items: center; justify-content: center; padding: 15px 34px;
+border: 1px solid var(--accent); border-radius: 100px; background: transparent;
+font: inherit; font-size: 0.98rem; font-weight: 700; color: var(--accent);
+text-transform: uppercase; letter-spacing: 2px; text-decoration: none;
+position: relative; overflow: hidden; isolation: isolate; z-index: 1; transition: color 0.3s;
+}
+.btn::before {
+content: ''; position: absolute; top: 100%; left: 0; width: 100%; height: 100%;
+background: var(--accent); transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: -1;
+}
+.btn:focus-visible { color: var(--bg); }
+.btn:focus-visible::before { top: 0; }
+.btn.solid { background: var(--accent); color: var(--bg); }
+.btn.solid::before { background: var(--text); }
+.btn-email { text-transform: none; letter-spacing: 1px; }
+@media (hover: hover) {
+.btn:hover { color: var(--bg); }
+.btn:hover::before { top: 0; }
+}
+.next-link {
+display: inline-flex; align-items: center; gap: 12px; margin-top: 48px; padding: 12px 22px;
+background: rgba(var(--surface-rgb), 0.95); border: 1px solid var(--line);
+font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; letter-spacing: 2px;
+text-transform: uppercase; text-decoration: none; color: #c9d5e3; transition: color 0.3s, border-color 0.3s;
+}
+.next-link .arrow { display: inline-block; transition: transform 0.3s; }
+@media (hover: hover) {
+.next-link:hover { color: var(--accent); border-color: var(--accent); }
+.next-link:hover .arrow { transform: translateY(5px); }
+}
+.card {
+background: rgba(var(--surface-rgb), 0.96); border: 1px solid var(--line);
+border-left: 3px solid rgba(var(--accent-rgb), 0.7); padding: 28px 30px;
+transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+@media (hover: hover) {
+.card:hover { transform: translateY(-5px); border-color: rgba(var(--accent-rgb), 0.6); box-shadow: 0 14px 36px rgba(0, 0, 0, 0.4); }
+}
+.card h3 { font-family: var(--font-head); color: var(--text); font-size: 2rem; font-weight: 600; letter-spacing: 0.4px; line-height: 1.2; margin-bottom: 6px; }
+.card p { font-size: 1.12rem; line-height: 1.65; color: var(--body); }
+.tag {
+display: block; margin-bottom: 8px; font-family: var(--font-mono); font-size: 0.9rem;
+font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent);
+}
+.about-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.prose { padding: clamp(26px, 3vw, 40px); border: 1px solid var(--line); border-left: 3px solid rgba(var(--accent-rgb), 0.7); background: rgba(var(--surface-rgb), 0.96); }
+.prose p { font-size: 1.2rem; line-height: 1.8; color: #e2e9f2; }
+.prose p + p { margin-top: 20px; }
+.edu-list { display: grid; gap: 16px; }
+.spot { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 0 clamp(20px, 4vw, 48px); padding-bottom: 64px; }
+.spot + .spot { padding-top: 8px; }
+.spot-index {
+font-family: var(--font-head); font-size: clamp(4.5rem, 9vw, 7rem); font-weight: 700; line-height: 0.9;
+color: transparent; -webkit-text-stroke: 1.5px rgba(var(--accent-rgb), 0.55);
+}
+.spot h3 { font-family: var(--font-head); color: var(--text); font-size: clamp(2.1rem, 3.6vw, 2.8rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.1; margin-bottom: 8px; }
+.spot-lead { color: var(--body); font-size: 1.15rem; margin-bottom: 20px; }
+.spot-body { background: rgba(var(--surface-rgb), 0.96); border: 1px solid var(--line); border-left: 3px solid rgba(var(--accent-rgb), 0.7); padding: clamp(24px, 3vw, 36px); }
+.proj-list { border-top: 1px solid var(--line); }
+.proj-row {
+display: grid; grid-template-columns: 250px minmax(0, 1fr) 210px;
+gap: 8px 24px; padding: 18px 4px; align-items: baseline; border-bottom: 1px solid var(--line);
+transition: background 0.3s;
+}
+@media (hover: hover) { .proj-row:hover { background: rgba(var(--accent-rgb), 0.07); } }
+.proj-where { font-weight: 800; color: var(--text); font-size: 1.12rem; }
+.proj-what { color: var(--body); font-size: 1.12rem; line-height: 1.55; }
+.proj-when { font-family: var(--font-mono); font-size: 0.92rem; font-weight: 700; color: var(--accent); text-align: right; white-space: nowrap; }
+.timeline { position: relative; }
+.timeline::before { content: ''; position: absolute; left: 300px; top: 8px; bottom: 8px; width: 1px; background: var(--line); }
+.tl-item { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 0 60px; padding: 0 0 36px 0; position: relative; }
+.tl-item::before {
+content: ''; position: absolute; left: 294px; top: 9px; width: 13px; height: 13px; border-radius: 50%;
+background: var(--bg); border: 2px solid var(--accent);
+}
+.tl-date { white-space: nowrap; font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; letter-spacing: 0.5px; color: var(--accent); text-align: right; line-height: 1.5;
+justify-self: end; align-self: start; margin-top: 2px; padding: 6px 12px; background: rgba(var(--surface-rgb), 0.96); border: 1px solid var(--line); }
+.tl-body { background: rgba(var(--surface-rgb), 0.96); border: 1px solid var(--line); border-left: 3px solid rgba(var(--accent-rgb), 0.7); padding: 22px 28px; }
+.tl-body h3 { font-family: var(--font-head); color: var(--text); font-size: 2rem; font-weight: 600; letter-spacing: 0.4px; line-height: 1.2; margin-bottom: 4px; }
+.tl-body p { font-size: 1.12rem; line-height: 1.6; color: var(--body); }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+.skill-group h3 { font-family: var(--font-head); color: var(--text); font-size: 2rem; font-weight: 600; letter-spacing: 0.4px; margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.skill-list li { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 11px 0; color: #e8eef6; font-size: 1.12rem; border-bottom: 1px dashed var(--line-soft); }
+.skill-list li:last-child { border-bottom: 0; }
+.level { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.3px; color: #b6c3d4; white-space: nowrap; }
+.dots { display: inline-flex; gap: 4px; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; border: 1px solid rgba(var(--accent-rgb), 0.7); }
+.dots i.on { background: var(--accent); }
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; }
+.ref-grid .card { padding: 22px 24px; }
+.ref-grid .card h3 { font-size: 1.7rem; }
+.note { margin-top: 28px; padding: 16px 22px; display: inline-block; background: rgba(var(--surface-rgb), 0.95); border: 1px solid var(--line); font-size: 1.05rem; color: var(--body); }
+.contact { text-align: center; }
+.contact .wrap { max-width: 900px; background: rgba(var(--surface-rgb), 0.95); border: 1px solid var(--line); border-top: 3px solid var(--accent); padding: clamp(32px, 5vw, 64px); }
+.contact .eyebrow { justify-content: center; }
+.contact .eyebrow::after { display: none; }
+.contact .sec-title { margin-bottom: 20px; }
+.contact .hero-desc { margin: 0 auto; }
+.contact-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 40px; }
+.closing { margin-top: 90px; padding-top: 32px; border-top: 1px solid var(--line); font-family: var(--font-mono); font-size: 0.95rem; letter-spacing: 1.5px; text-transform: uppercase; color: #b6c3d4; }
+.sec-title, .eyebrow {
+text-shadow: 0 0 18px rgba(var(--bg-rgb), 1), 0 0 6px rgba(var(--bg-rgb), 0.95);
+}
+.js-ready .reveal {
+opacity: 0; transform: translateY(28px);
+transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.js-ready .reveal.in-view { opacity: 1; transform: none; }
+@media (max-width: 960px) {
+.nav-links { display: none; }
+.menu-toggle { display: block; }
+.hero .wrap.has-photo { grid-template-columns: 1fr; }
+.portrait { justify-self: start; max-width: 280px; }
+.about-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+.app { font-size: 18px; }
+.spot { grid-template-columns: 1fr; padding-bottom: 48px; }
+.spot-index { font-size: 4.2rem; margin-bottom: 4px; }
+.proj-row { grid-template-columns: 1fr; gap: 4px; padding: 16px 18px; }
+.proj-when { text-align: left; white-space: normal; }
+.timeline::before { left: 6px; }
+.tl-item { grid-template-columns: 1fr; gap: 6px; padding: 0 0 28px 30px; }
+.tl-item::before { left: 0; top: 4px; }
+.tl-date { text-align: left; justify-self: start; white-space: normal; }
+.proj-row { grid-template-columns: 1fr; }
+.btn { padding: 15px 26px; font-size: 0.8rem; letter-spacing: 1.2px; max-width: 100%; overflow-wrap: anywhere; text-align: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+.js-ready .reveal { opacity: 1; transform: none; transition: none; }
+.card, .btn::before, .luxury-nav, .mobile-menu, .next-link .arrow { transition: none; }
+}
+</style>
+<div class="app" id="app">
+<a class="skip-link" href="#main">İçeriğe geç</a>
+<div class="grid-bg" aria-hidden="true"></div>
+<canvas id="canvas-network" aria-hidden="true"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-outline" id="cursor-outline" aria-hidden="true"></div>
+<header class="luxury-nav" id="nav">
+<a href="#" class="brand-name" aria-label="Cemal Güney — sayfa başı">Cemal<span>.</span></a>
+<nav class="nav-links" aria-label="Ana menü">
+<a href="#about" data-nav="about">Hakkımda</a>
+<a href="#projects" data-nav="projects">Projeler</a>
+<a href="#experience" data-nav="experience">Deneyim</a>
+<a href="#expertise" data-nav="expertise">Uzmanlık</a>
+<a href="#references" data-nav="references">Referanslar</a>
+<a href="#contact" data-nav="contact">İletişim</a>
+</nav>
+<button class="menu-toggle" id="menu-toggle" type="button" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mobile-menu">
+<span></span><span></span>
+</button>
+</header>
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true"></div>
+<main id="main" tabindex="-1">
+<section id="home" class="hero section">
+<div class="wrap" id="hero-wrap">
+<div class="hero-copy">
+<h1 class="hero-title">Cemal Güney</h1>
+<div class="hero-subtitle">Makine Mühendisi</div>
+<p class="hero-desc">Mühendislik vizyonu, analitik düşünce ve global deneyimle üretim süreçlerinde sürdürülebilir değer yaratıyoruz.</p>
+<div class="hero-facts">
+<span class="chip">4 ülkede montaj &amp; keşif</span>
+<span class="chip">SOLIDWORKS · AutoCAD</span>
+<span class="chip">FANUC · MITSUBISHI CNC</span>
+</div>
+<div class="hero-actions" id="hero-actions">
+<a href="#projects" class="btn solid">Projeleri İncele</a>
+</div>
+<a href="#about" class="next-link" aria-label="Sonraki bölüm: Hakkımda"><span>Sonraki</span><span class="arrow">↓</span></a>
+</div>
+<div class="portrait" id="portrait" hidden></div>
+</div>
+</section>
+<section id="about" class="section" aria-labelledby="about-title">
+<div class="wrap">
+<div class="eyebrow">01 / Hakkımda</div>
+<h2 class="sec-title" id="about-title">Eğitim &amp; Felsefe</h2>
+<div class="about-grid">
+<div class="prose">
+<p>2021 yılında Karadeniz Teknik Üniversitesi Makine Mühendisliği bölümünden mezuniyetimle birlikte, edindiğim teorik donanımı ve akademik vizyonu, üretim ve mühendislik süreçlerinde katma değer yaratmak amacıyla pratiğe dönüştürmekteyim.</p>
+<p>Analitik düşünme yeteneğim ve yüksek adaptasyon becerim sayesinde, görev aldığım tüm projelerde ürün, imalat ve entegrasyon süreçlerine hızla uyum sağlamaktayım.</p>
+</div>
+<div class="edu-list">
+<div class="card">
+<span class="tag">Ekim 2017 – Ağustos 2021</span>
+<h3>Karadeniz Teknik Üniversitesi</h3>
+<p>Makine Mühendisliği Lisans Eğitimi.</p>
+</div>
+<div class="card">
+<span class="tag">Eylül 2012 – Ocak 2015</span>
+<h3>Matematik Bölümü</h3>
+<p>Temel Bilimler Eğitimi (bölümden ayrıldı).</p>
+</div>
+<div class="card">
+<span class="tag">Nisan 2023 – Nisan 2024</span>
+<h3>İngilizce Eğitimi</h3>
+<p>İngilizce (B2 Seviyesi) Profesyonel İletişim Sertifikasyonu.</p>
+</div>
+</div>
+</div>
+<a href="#projects" class="next-link" aria-label="Sonraki bölüm: Projeler"><span>Sonraki</span><span class="arrow">↓</span></a>
+</div>
+</section>
+<section id="projects" class="section" aria-labelledby="projects-title">
+<div class="wrap">
+<div class="eyebrow">02 / Projeler</div>
+<h2 class="sec-title" id="projects-title">Projeler &amp; Yurt Dışı Deneyimi</h2>
+<div class="spot">
+<div class="spot-index" aria-hidden="true">01</div>
+<div class="spot-body">
+<h3>Uluslararası Montaj &amp; Keşif</h3>
+<p class="spot-lead">Yıkama ve kataforez hatlarının sahada kurulumu ve keşfi.</p>
+<div class="proj-list">
+<div class="proj-row"><span class="proj-where">Fas · Kenitra</span><span class="proj-what">Kataforez ve Yıkama Hattı Montajı</span><span class="proj-when">02 Şub – 22 Nis 2026</span></div>
+<div class="proj-row"><span class="proj-where">Kazakistan · Kostanay</span><span class="proj-what">Yıkama Hattı Montajı</span><span class="proj-when">17 Nis – 11 Haz 2024</span></div>
+<div class="proj-row"><span class="proj-where">Kazakistan · Kostanay</span><span class="proj-what">Saha Keşif Ziyareti</span><span class="proj-when">21 – 26 Şub 2024</span></div>
+<div class="proj-row"><span class="proj-where">Almanya · Eisenach</span><span class="proj-what">Daldırma Tipi Yıkama Hattı</span><span class="proj-when"></span></div>
+<div class="proj-row"><span class="proj-where">Arabistan · KSA</span><span class="proj-what">Daldırma Tipi Yıkama Hattı</span><span class="proj-when"></span></div>
+</div>
+</div>
+</div>
+<div class="spot">
+<div class="spot-index" aria-hidden="true">02</div>
+<div class="spot-body">
+<h3>Mühendislik Revizyonları</h3>
+<p class="spot-lead">Tezgah dönüşümü ve mezuniyet projesi.</p>
+<div class="proj-list">
+<div class="proj-row"><span class="proj-where">4m Köprülü Freze Tezgahı</span><span class="proj-what">Kutu kızaktan lineer kızak sistemine dönüşüm projesi</span><span class="proj-when">Ekim 2022</span></div>
+<div class="proj-row"><span class="proj-where">İnsansız Hava Aracı (İHA)</span><span class="proj-what">KTÜ Mezuniyet Projesi</span><span class="proj-when">Haziran 2021</span></div>
+</div>
+</div>
+</div>
+<a href="#experience" class="next-link" aria-label="Sonraki bölüm: Deneyim"><span>Sonraki</span><span class="arrow">↓</span></a>
+</div>
+</section>
+<section id="experience" class="section" aria-labelledby="experience-title">
+<div class="wrap">
+<div class="eyebrow">03 / Deneyim</div>
+<h2 class="sec-title" id="experience-title">Kariyer Yolculuğu</h2>
+<div class="timeline">
+<div class="tl-item">
+<div class="tl-date">Haziran 2023 — Ekim 2026</div>
+<div class="tl-body"><h3>EFE-KMT Galvano Plastik</h3><p>Tasarım, Planlama, Kontrol ve Üretim Sorumlusu.</p></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">Kasım 2022 — Mart 2023</div>
+<div class="tl-body"><h3>Yapa Kalıp Makina</h3><p>Makine Mühendisi (CAD-CAM ve Üretim Hattı Sorumlusu).</p></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">Aralık 2021 — Mart 2023</div>
+<div class="tl-body"><h3>Exper Makine CNC</h3><p>Makine Mühendisi (Bakım, Onarım ve Revizyon Uzmanı).</p></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">Ağustos 2021 — Eylül 2021</div>
+<div class="tl-body"><h3>Çaykur Anatamir Fabrikası</h3><p>Stajyer Mühendis.</p></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">Temmuz 2016 — Ağustos 2021</div>
+<div class="tl-body"><h3>Ön Muhasebe Elemanı</h3><p>Finansal kayıt ve takip operasyonları.</p></div>
+</div>
+<div class="tl-item">
+<div class="tl-date">Eylül 2013 — Ocak 2015</div>
+<div class="tl-body"><h3>Satış Danışmanı</h3><p>Müşteri ilişkileri ve satış yönetimi.</p></div>
+</div>
+</div>
+<a href="#expertise" class="next-link" aria-label="Sonraki bölüm: Uzmanlık"><span>Sonraki</span><span class="arrow">↓</span></a>
+</div>
+</section>
+<section id="expertise" class="section" aria-labelledby="expertise-title">
+<div class="wrap">
+<div class="eyebrow">04 / Uzmanlık</div>
+<h2 class="sec-title" id="expertise-title">Uzmanlık Alanları</h2>
+<div class="skills-grid">
+<div class="skill-group card">
+<h3>CAD / CAM Sistemleri</h3>
+<ul class="skill-list">
+<li><span>SOLIDWORKS</span><span class="level" data-l="3">Deneyimli</span></li>
+<li><span>AutoCAD</span><span class="level" data-l="3">Deneyimli</span></li>
+<li><span>WISI CAD/CAM</span><span class="level" data-l="2">Yetenekli</span></li>
+<li><span>CATIA CAD/CAM</span><span class="level" data-l="1">Başlangıç</span></li>
+</ul>
+</div>
+<div class="skill-group card">
+<h3>Üretim &amp; CNC</h3>
+<ul class="skill-list">
+<li><span>FANUC CNC Panel</span><span class="level" data-l="3">Deneyimli</span></li>
+<li><span>MITSUBISHI CNC Panel</span><span class="level" data-l="3">Deneyimli</span></li>
+<li><span>Talaşlı İmalat Revizyonu</span></li>
+<li><span>Operasyon Yönetimi</span></li>
+</ul>
+</div>
+<div class="skill-group card">
+<h3>Süreç &amp; Optimizasyon</h3>
+<ul class="skill-list">
+<li><span>Microsoft Excel</span><span class="level" data-l="3">Deneyimli</span></li>
+<li><span>Hat Optimizasyonu</span></li>
+<li><span>Kalite Kontrol</span></li>
+<li><span>Montaj Hattı Kurulumu</span></li>
+</ul>
+</div>
+</div>
+<a href="#references" class="next-link" aria-label="Sonraki bölüm: Referanslar"><span>Sonraki</span><span class="arrow">↓</span></a>
+</div>
+</section>
+<section id="references" class="section" aria-labelledby="references-title">
+<div class="wrap">
+<div class="eyebrow">05 / Referanslar</div>
+<h2 class="sec-title" id="references-title">Referanslar</h2>
+<div class="ref-grid">
+<div class="card"><span class="tag">Firma Sahibi</span><h3>Yılmaz Efe</h3><p>EFE-KMT Galvano Plastik</p></div>
+<div class="card"><span class="tag">Şirket Sahibi</span><h3>Murat Coşkun</h3><p>Exper Makine CNC</p></div>
+<div class="card"><span class="tag">Genel Müdür</span><h3>Yakup Durmuş</h3><p>Yapa Kalıp Makina</p></div>
+<div class="card"><span class="tag">Proje Müdürü</span><h3>Alparslan Tan</h3><p>Yapa Kalıp Makina</p></div>
+<div class="card"><span class="tag">Genel Müdür Yrd.</span><h3>Murat Tellioğlu</h3><p>Çaykur Anatamir Fabrikası</p></div>
+<div class="card"><span class="tag">Atölye Kısım Müdürü</span><h3>Abdullah Tütüncü</h3><p>Çaykur Anatamir Fabrikası</p></div>
+</div>
+<p class="note">Referans kişilerin iletişim bilgileri talep üzerine paylaşılır.</p>
+<a href="#contact" class="next-link" aria-label="Sonraki bölüm: İletişim"><span>Sonraki</span><span class="arrow">↓</span></a>
+</div>
+</section>
+<section id="contact" class="contact section" aria-labelledby="contact-title">
+<div class="wrap">
+<div class="eyebrow">06 / İletişim</div>
+<h2 class="sec-title" id="contact-title">Bağlantı Kurun</h2>
+<p class="hero-desc">Sektörel deneyimlerimi daha ayrıntılı paylaşmak, teknik sorularınızı yanıtlamak ve olası iş birliği fırsatlarını değerlendirmek adına benimle iletişime geçebilirsiniz.</p>
+<div class="contact-actions" id="contact-actions"></div>
+<p class="closing">Ziyaretiniz için teşekkürler</p>
+</div>
+</section>
+</main>
+</div>
+</template>
+<script>
+(function () {
+'use strict';
+var CONFIG = {
+name: 'Cemal Güney',
+jobTitle: 'Makine Mühendisi',
+email: 'cemal.guney@ornekmail.com',   // <-- GERÇEK E-POSTAYLA DEĞİŞTİR
+linkedin: '',                          // örn. 'https://www.linkedin.com/in/kullanici-adi'  (boşsa buton gösterilmez)
+cvUrl: '',                             // örn. 'https://siteniz.com/cemal-guney-cv.pdf'    (boşsa buton gösterilmez)
+photo: '',                             // profil fotoğrafı (tam URL). Doluysa hero bölümünde görünür
+ogImage: '',                           // paylaşım önizleme görseli (tam URL), isteğe bağlı
+description: 'Makine Mühendisi Cemal Güney: CAD/CAM, CNC, üretim hattı kurulumu ve optimizasyonu alanlarında uluslararası saha deneyimi.'
+};
+var doc = document, html = doc.documentElement, body = doc.body, head = doc.head;
+var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (!html.getAttribute('lang')) html.setAttribute('lang', 'tr');
+doc.title = CONFIG.name + ' | ' + CONFIG.jobTitle;
+function setMeta(attr, key, val) {
+if (!val) return;
+var m = head.querySelector('meta[' + attr + '="' + key + '"]');
+if (!m) { m = doc.createElement('meta'); m.setAttribute(attr, key); head.appendChild(m); }
+m.setAttribute('content', val);
+}
+setMeta('name', 'description', CONFIG.description);
+setMeta('name', 'viewport', 'width=device-width, initial-scale=1');
+setMeta('property', 'og:type', 'website');
+setMeta('property', 'og:locale', 'tr_TR');
+setMeta('property', 'og:title', doc.title);
+setMeta('property', 'og:description', CONFIG.description);
+setMeta('property', 'og:url', location.href.split('#')[0]);
+setMeta('property', 'og:image', CONFIG.ogImage);
+setMeta('name', 'twitter:card', CONFIG.ogImage ? 'summary_large_image' : 'summary');
+setMeta('name', 'theme-color', '#0a0e14');
+if (!doc.getElementById('cg-jsonld')) {
+var person = {
+'@context': 'https://schema.org', '@type': 'Person',
+name: CONFIG.name, jobTitle: CONFIG.jobTitle,
+url: location.href.split('#')[0],
+alumniOf: { '@type': 'CollegeOrUniversity', name: 'Karadeniz Teknik Üniversitesi' },
+knowsAbout: ['SOLIDWORKS', 'AutoCAD', 'CAD/CAM', 'CNC', 'Üretim hattı optimizasyonu', 'Kalite kontrol']
+};
+if (CONFIG.email && CONFIG.email.indexOf('ornekmail') === -1) person.email = 'mailto:' + CONFIG.email;
+if (CONFIG.linkedin) person.sameAs = [CONFIG.linkedin];
+var ld = doc.createElement('script');
+ld.type = 'application/ld+json'; ld.id = 'cg-jsonld';
+ld.textContent = JSON.stringify(person);
+head.appendChild(ld);
+}
+function addLink(id, rel, href, cors) {
+if (doc.getElementById(id)) return;
+var l = doc.createElement('link');
+l.id = id; l.rel = rel; l.href = href;
+if (cors) l.crossOrigin = 'anonymous';
+head.appendChild(l);
+}
+addLink('cg-pc1', 'preconnect', 'https://fonts.googleapis.com');
+addLink('cg-pc2', 'preconnect', 'https://fonts.gstatic.com', true);
+addLink('cg-font', 'stylesheet', 'https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Manrope:wght@300;400;600;800&display=swap');
+var old = doc.getElementById('cg-host');
+if (old && old.parentNode) old.parentNode.removeChild(old);
+var tpl = doc.getElementById('cg-template');
+if (!tpl) return;
+var host = doc.createElement('div');
+host.id = 'cg-host';
+body.appendChild(host);
+var root = host.attachShadow({ mode: 'open' });
+root.appendChild(tpl.content.cloneNode(true));
+var HOST_STYLE = [
+['position', 'fixed'], ['top', '0'], ['left', '0'], ['right', '0'], ['bottom', '0'],
+['width', '100%'], ['height', '100%'], ['margin', '0'], ['padding', '0'],
+['z-index', '2147483647'], ['display', 'block'], ['visibility', 'visible'],
+['opacity', '1'], ['transform', 'none'], ['filter', 'none'],
+['background-color', '#0a0e14']
+];
+var hostObserver = null;
+function enforce() {
+HOST_STYLE.forEach(function (p) { host.style.setProperty(p[0], p[1], 'important'); });
+[html, body].forEach(function (el) {
+el.style.setProperty('background-color', '#0a0e14', 'important');
+});
+if (hostObserver) hostObserver.takeRecords();
+}
+function hideOthers() {
+var kids = body.children;
+for (var i = 0; i < kids.length; i++) {
+var c = kids[i], t = c.tagName;
+if (c !== host && t !== 'SCRIPT' && t !== 'STYLE' && t !== 'LINK' && t !== 'TEMPLATE' && t !== 'NOSCRIPT') {
+c.style.setProperty('display', 'none', 'important');
+}
+}
+}
+enforce(); hideOthers();
+setTimeout(function () { enforce(); hideOthers(); }, 100);
+setTimeout(function () { enforce(); hideOthers(); }, 1000);
+if (window.MutationObserver) {
+hostObserver = new MutationObserver(enforce);
+hostObserver.observe(host, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+new MutationObserver(hideOthers).observe(body, { childList: true });
+}
+var app = root.getElementById('app');
+var nav = root.getElementById('nav');
+var toggle = root.getElementById('menu-toggle');
+var menu = root.getElementById('mobile-menu');
+menu.innerHTML = root.querySelector('.nav-links').innerHTML;
+function makeBtn(label, href, extraClass, newTab) {
+var a = doc.createElement('a');
+a.className = 'btn' + (extraClass ? ' ' + extraClass : '');
+a.href = href; a.textContent = label;
+if (newTab) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+return a;
+}
+var actions = root.getElementById('contact-actions');
+if (CONFIG.email) actions.appendChild(makeBtn(CONFIG.email, 'mailto:' + CONFIG.email, 'btn-email'));
+if (CONFIG.linkedin) actions.appendChild(makeBtn('LinkedIn', CONFIG.linkedin, '', true));
+if (CONFIG.cvUrl) actions.appendChild(makeBtn('CV İndir', CONFIG.cvUrl, '', true));
+if (CONFIG.cvUrl) root.getElementById('hero-actions').appendChild(makeBtn('CV İndir', CONFIG.cvUrl, '', true));
+if (CONFIG.email && CONFIG.email.indexOf('ornekmail') !== -1 && window.console) {
+console.warn('[Cemal Güney sayfası] CONFIG.email hâlâ örnek adres. Gerçek e-postayla değiştir.');
+}
+if (CONFIG.photo) {
+var portrait = root.getElementById('portrait');
+var img = doc.createElement('img');
+img.src = CONFIG.photo; img.alt = CONFIG.name + ' profil fotoğrafı';
+img.decoding = 'async';
+portrait.appendChild(img);
+portrait.hidden = false;
+root.getElementById('hero-wrap').classList.add('has-photo');
+}
+Array.prototype.forEach.call(root.querySelectorAll('.level'), function (el) {
+var n = parseInt(el.getAttribute('data-l'), 10) || 0, d = doc.createElement('span');
+d.className = 'dots'; d.setAttribute('aria-hidden', 'true');
+for (var i = 1; i <= 3; i++) { var dot = doc.createElement('i'); if (i <= n) dot.className = 'on'; d.appendChild(dot); }
+el.appendChild(d);
+});
+function setMenu(open) {
+app.classList.toggle('menu-open', open);
+toggle.setAttribute('aria-expanded', String(open));
+toggle.setAttribute('aria-label', open ? 'Menüyü kapat' : 'Menüyü aç');
+menu.setAttribute('aria-hidden', String(!open));
+}
+toggle.addEventListener('click', function () { setMenu(!app.classList.contains('menu-open')); });
+doc.addEventListener('keydown', function (e) {
+if (e.key === 'Escape' && app.classList.contains('menu-open')) { setMenu(false); toggle.focus(); }
+});
+window.addEventListener('resize', function () { if (window.innerWidth > 960) setMenu(false); });
+app.addEventListener('click', function (e) {
+var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+if (!a) return;
+e.preventDefault();
+var id = a.getAttribute('href').slice(1);
+setMenu(false);
+var target = id ? root.getElementById(id) : null;
+var top = target
+? target.getBoundingClientRect().top - app.getBoundingClientRect().top + app.scrollTop
+: 0;
+app.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+if (target) { target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
+});
+app.addEventListener('scroll', function () {
+nav.classList.toggle('scrolled', app.scrollTop > 40);
+}, { passive: true });
+var navLinks = root.querySelectorAll('[data-nav]');
+function setActive(id) {
+for (var i = 0; i < navLinks.length; i++) {
+var on = navLinks[i].getAttribute('data-nav') === id;
+navLinks[i].classList.toggle('active', on);
+if (on) navLinks[i].setAttribute('aria-current', 'true');
+else navLinks[i].removeAttribute('aria-current');
+}
+}
+if ('IntersectionObserver' in window) {
+var revealEls = root.querySelectorAll(
+'.hero-copy > *, .portrait, .eyebrow, .sec-title, .prose, .edu-list > .card, .spot, ' +
+'.tl-item, .skills-grid > .card, .ref-grid > .card, .note, .next-link, .contact .hero-desc, .contact-actions, .closing'
+);
+Array.prototype.forEach.call(revealEls, function (el) { el.classList.add('reveal'); });
+app.classList.add('js-ready');
+var revealIO = new IntersectionObserver(function (entries) {
+var vis = entries.filter(function (en) { return en.isIntersecting; })
+.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top || a.boundingClientRect.left - b.boundingClientRect.left; });
+vis.forEach(function (en, n) {
+var el = en.target;
+el.style.transitionDelay = Math.min(n, 5) * 80 + 'ms';
+el.classList.add('in-view');
+revealIO.unobserve(el);
+setTimeout(function () { el.style.transitionDelay = ''; el.classList.remove('reveal'); }, 1600);
+});
+}, { root: app, threshold: 0.08, rootMargin: '0px 0px -6% 0px' });
+Array.prototype.forEach.call(revealEls, function (el) { revealIO.observe(el); });
+var spyIO = new IntersectionObserver(function (entries) {
+entries.forEach(function (en) {
+if (en.isIntersecting) setActive(en.target.id === 'home' ? '' : en.target.id);
+});
+}, { root: app, rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+Array.prototype.forEach.call(root.querySelectorAll('main > section[id]'), function (s) { spyIO.observe(s); });
+}
+var mouseX = -9999, mouseY = -9999;
+var finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+if (finePointer) {
+var dot = root.getElementById('cursor-dot');
+var outline = root.getElementById('cursor-outline');
+var ox = 0, oy = 0, cursorRaf = null, firstMove = true;
+function cursorLoop() {
+ox += (mouseX - ox) * 0.15;
+oy += (mouseY - oy) * 0.15;
+outline.style.transform = 'translate3d(' + ox + 'px,' + oy + 'px,0) translate(-50%,-50%)';
+if (Math.abs(mouseX - ox) > 0.1 || Math.abs(mouseY - oy) > 0.1) {
+cursorRaf = requestAnimationFrame(cursorLoop);
+} else { cursorRaf = null; }
+}
+window.addEventListener('mousemove', function (e) {
+mouseX = e.clientX; mouseY = e.clientY;
+if (firstMove) { ox = mouseX; oy = mouseY; firstMove = false; app.classList.add('cursor-on'); }
+dot.style.transform = 'translate3d(' + mouseX + 'px,' + mouseY + 'px,0) translate(-50%,-50%)';
+if (!cursorRaf) cursorRaf = requestAnimationFrame(cursorLoop);
+}, { passive: true });
+doc.addEventListener('mouseleave', function () { app.classList.remove('cursor-on'); });
+doc.addEventListener('mouseenter', function () { if (!firstMove) app.classList.add('cursor-on'); });
+app.addEventListener('mouseover', function (e) {
+app.classList.toggle('hovering', !!(e.target.closest && e.target.closest('a, button')));
+});
+}
+var canvas = root.getElementById('canvas-network');
+if (canvas && canvas.getContext) {
+var ctx = canvas.getContext('2d');
+var TAU = Math.PI * 2;
+var W = 0, H = 0, M = 8, trains = [], crank = null;
+var raf = null, resizeTimer = null, drawPending = false;
+var t0 = performance.now(), scrollY = 0, parX = 0, parY = 0;
+var ACC = (getComputedStyle(app).getPropertyValue('--accent-rgb') || '76, 180, 255').trim();
+var MONO = '11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+var AM = 1;
+function col(a) { return 'rgba(' + ACC + ',' + (a * AM).toFixed(3) + ')'; }
+var TRAIN_DEFS = [
+{ x: 0.84, y: 0.26, z: 36, speed: 0.20, kids: [
+{ z: 18, at: 200, kids: [ { z: 27, at: 120 } ] },
+{ z: 24, at: 95, lab: 60 }
+] },
+{ x: 0.10, y: 0.86, z: 44, speed: -0.14, kids: [
+{ z: 20, at: -35, lab: 90, kids: [ { z: 30, at: -10, kids: [ { z: 16, at: 40 } ] } ] }
+] }
+];
+function build() {
+M = Math.max(4.5, Math.min(10, Math.min(W, H) / 100));
+trains = TRAIN_DEFS.map(function (d) {
+var rootG = { z: d.z, m: M, r: M * d.z / 2, x: d.x * W, y: d.y * H, parent: null, theta: 0, a: 0, lab: null };
+var list = [rootG];
+(function walk(node, kids) {
+(kids || []).forEach(function (k) {
+var th = k.at * Math.PI / 180, rc = M * k.z / 2;
+var g = {
+z: k.z, m: M, r: rc, parent: node, theta: th, a: 0,
+x: node.x + Math.cos(th) * (node.r + rc),
+y: node.y + Math.sin(th) * (node.r + rc),
+lab: (typeof k.lab === 'number') ? k.lab * Math.PI / 180 : null
+};
+list.push(g);
+walk(g, k.kids);
+});
+})(rootG, d.kids);
+return { speed: d.speed, gears: list };
+});
+crank = {
+x: (W < 700 ? 0.38 : 0.60) * W, y: 0.93 * H,
+r: 5 * M, L: 13 * M, w: 6 * M, h: 5 * M
+};
+}
+function solve(tr, t) {
+var g0 = tr.gears[0], dir = tr.speed >= 0 ? 1 : -1;
+g0.a = tr.speed * t + dir * scrollY * 0.0032;
+for (var i = 1; i < tr.gears.length; i++) {
+var g = tr.gears[i], p = g.parent;
+g.a = g.theta + Math.PI + Math.PI / g.z - (p.a - g.theta) * p.z / g.z;
+}
+}
+function drawGear(g) {
+var N = g.z, p = TAU / N, m = g.m, rt = g.r + m, rr = g.r - 1.25 * m;
+var x = g.x + parX, y = g.y + parY, a = g.a, k, c;
+ctx.beginPath();
+for (k = 0; k < N; k++) {
+c = a + k * p;
+var px = x + Math.cos(c - 0.27 * p) * rr, py = y + Math.sin(c - 0.27 * p) * rr;
+if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+ctx.lineTo(x + Math.cos(c - 0.12 * p) * rt, y + Math.sin(c - 0.12 * p) * rt);
+ctx.lineTo(x + Math.cos(c + 0.12 * p) * rt, y + Math.sin(c + 0.12 * p) * rt);
+ctx.lineTo(x + Math.cos(c + 0.27 * p) * rr, y + Math.sin(c + 0.27 * p) * rr);
+ctx.arc(x, y, rr, c + 0.27 * p, c + 0.73 * p);
+}
+ctx.closePath();
+ctx.fillStyle = col(0.05); ctx.fill();
+ctx.strokeStyle = col(0.7); ctx.lineWidth = 1.7; ctx.lineJoin = 'round'; ctx.stroke();
+ctx.lineWidth = 1; ctx.strokeStyle = col(0.32);
+ctx.beginPath(); ctx.arc(x, y, rr * 0.80, 0, TAU); ctx.stroke();
+if (N >= 20) {
+var holes = N >= 36 ? 8 : (N >= 27 ? 6 : 5), hr = rr * 0.50, hs = rr * 0.15;
+ctx.strokeStyle = col(0.45);
+for (var h = 0; h < holes; h++) {
+var ha = a + h * TAU / holes;
+ctx.beginPath(); ctx.arc(x + Math.cos(ha) * hr, y + Math.sin(ha) * hr, hs, 0, TAU); ctx.stroke();
+}
+}
+var hub = Math.max(rr * 0.2, 5);
+ctx.strokeStyle = col(0.75); ctx.lineWidth = 1.4;
+ctx.beginPath(); ctx.arc(x, y, hub, 0, TAU); ctx.stroke();
+ctx.beginPath();
+ctx.moveTo(x + Math.cos(a) * hub * 0.55, y + Math.sin(a) * hub * 0.55);
+ctx.lineTo(x + Math.cos(a) * hub, y + Math.sin(a) * hub);
+ctx.stroke();
+ctx.fillStyle = col(0.85);
+ctx.beginPath(); ctx.arc(x, y, 2, 0, TAU); ctx.fill();
+}
+function drawAnnotations(g) {
+var x = g.x + parX, y = g.y + parY, ext = g.r + g.m * 3;
+ctx.save();
+ctx.lineWidth = 1;
+ctx.setLineDash([7, 5]); ctx.strokeStyle = col(0.30);
+ctx.beginPath(); ctx.arc(x, y, g.r, 0, TAU); ctx.stroke();
+ctx.setLineDash([16, 4, 3, 4]); ctx.strokeStyle = col(0.32);
+ctx.beginPath();
+ctx.moveTo(x - ext, y); ctx.lineTo(x + ext, y);
+ctx.moveTo(x, y - ext); ctx.lineTo(x, y + ext);
+ctx.stroke();
+ctx.restore();
+}
+function drawLabel(g, ang) {
+var x = g.x + parX, y = g.y + parY, cs = Math.cos(ang), sn = Math.sin(ang);
+var r0 = g.r + g.m * 1.2, r1 = r0 + 34;
+var sx = x + cs * r0, sy = y + sn * r0, ex = x + cs * r1, ey = y + sn * r1;
+var right = cs >= 0, txt = 'm2  Z' + g.z + '  Ø' + (g.z * 2) + ' mm';
+ctx.save();
+ctx.font = MONO;
+var tw = ctx.measureText(txt).width, endX = right ? ex + tw + 10 : ex - tw - 10;
+if (endX < 10 || endX > W - 10 || ey < 96 || ey > H - 14) { ctx.restore(); return; }
+ctx.strokeStyle = col(0.5); ctx.lineWidth = 1;
+ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.lineTo(endX, ey); ctx.stroke();
+ctx.fillStyle = col(0.75);
+ctx.textAlign = right ? 'left' : 'right';
+ctx.fillText(txt, right ? ex + 4 : ex - 4, ey - 5);
+ctx.restore();
+}
+function drawCrank(t) {
+if (!crank) return;
+var cx = crank.x + parX, cy = crank.y + parY, r = crank.r, L = crank.L, w = crank.w, h = crank.h;
+var th = t * 0.9 + scrollY * 0.0032;
+var pinX = cx + r * Math.cos(th), pinY = cy + r * Math.sin(th);
+var xp = pinX + Math.sqrt(L * L - Math.pow(r * Math.sin(th), 2));
+var xl = cx + L - r - w * 0.5, xr = cx + L + r + w * 0.65 + 8, gap = 5;
+ctx.save();
+ctx.lineWidth = 1.3; ctx.strokeStyle = col(0.45);
+ctx.beginPath();
+ctx.moveTo(xl, cy - h / 2 - gap); ctx.lineTo(xr, cy - h / 2 - gap); ctx.lineTo(xr, cy + h / 2 + gap); ctx.lineTo(xl, cy + h / 2 + gap);
+ctx.stroke();
+ctx.strokeStyle = col(0.22);
+ctx.beginPath();
+ctx.moveTo(xl, cy - h / 2 - gap - 9); ctx.lineTo(xr + 9, cy - h / 2 - gap - 9); ctx.lineTo(xr + 9, cy + h / 2 + gap + 9); ctx.lineTo(xl, cy + h / 2 + gap + 9);
+ctx.stroke();
+ctx.setLineDash([16, 4, 3, 4]); ctx.strokeStyle = col(0.30); ctx.lineWidth = 1;
+ctx.beginPath(); ctx.moveTo(cx - r * 1.6, cy); ctx.lineTo(xr + 36, cy); ctx.stroke();
+ctx.beginPath(); ctx.moveTo(cx, cy - r * 1.6); ctx.lineTo(cx, cy + r * 1.6); ctx.stroke();
+ctx.setLineDash([6, 5]); ctx.strokeStyle = col(0.30);
+ctx.beginPath(); ctx.arc(cx, cy, r, 0, TAU); ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = col(0.06); ctx.strokeStyle = col(0.7); ctx.lineWidth = 1.7;
+ctx.beginPath(); ctx.rect(xp - w * 0.35, cy - h / 2, w, h); ctx.fill(); ctx.stroke();
+ctx.lineWidth = 1; ctx.strokeStyle = col(0.45);
+ctx.beginPath();
+ctx.moveTo(xp + w * 0.45, cy - h / 2); ctx.lineTo(xp + w * 0.45, cy + h / 2);
+ctx.moveTo(xp + w * 0.55, cy - h / 2); ctx.lineTo(xp + w * 0.55, cy + h / 2);
+ctx.stroke();
+var dx = xp - pinX, dy = cy - pinY, len = Math.sqrt(dx * dx + dy * dy), ux = dx / len, uy = dy / len;
+var nx = -uy, ny = ux, hw = Math.max(M * 0.8, 4);
+ctx.fillStyle = col(0.07); ctx.strokeStyle = col(0.65); ctx.lineWidth = 1.6;
+ctx.beginPath();
+ctx.moveTo(pinX + nx * hw, pinY + ny * hw); ctx.lineTo(xp + nx * hw * 0.7, cy + ny * hw * 0.7);
+ctx.lineTo(xp - nx * hw * 0.7, cy - ny * hw * 0.7); ctx.lineTo(pinX - nx * hw, pinY - ny * hw);
+ctx.closePath(); ctx.fill(); ctx.stroke();
+ctx.beginPath(); ctx.arc(xp, cy, hw * 0.45, 0, TAU); ctx.stroke();
+ctx.lineWidth = 2.2; ctx.strokeStyle = col(0.8);
+ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(pinX, pinY); ctx.stroke();
+ctx.lineWidth = 1.5;
+ctx.beginPath(); ctx.arc(cx, cy, Math.max(M * 1.3, 8), 0, TAU); ctx.stroke();
+ctx.beginPath(); ctx.arc(pinX, pinY, hw * 0.75, 0, TAU); ctx.stroke();
+ctx.fillStyle = col(0.85);
+ctx.beginPath(); ctx.arc(cx, cy, 2.4, 0, TAU); ctx.fill();
+ctx.beginPath(); ctx.arc(pinX, pinY, 2.2, 0, TAU); ctx.fill();
+ctx.restore();
+}
+function drawTitleBlock() {
+if (W < 700) return;
+var bw = 270, bh = 40, x = W - bw - 20, y = H - bh - 18;
+ctx.save();
+ctx.strokeStyle = col(0.45); ctx.lineWidth = 1;
+ctx.strokeRect(x, y, bw, bh);
+ctx.beginPath(); ctx.moveTo(x, y + bh / 2); ctx.lineTo(x + bw, y + bh / 2); ctx.stroke();
+ctx.font = MONO; ctx.fillStyle = col(0.7);
+ctx.fillText('CEMAL GÜNEY — MAKİNE MÜHENDİSİ', x + 8, y + 14);
+ctx.fillStyle = col(0.5);
+ctx.fillText('ÖLÇEK 1:1   REV. A   A3', x + 8, y + 33);
+ctx.restore();
+}
+function frame(now) {
+var t = (now - t0) / 1000;
+var tx = mouseX > -1000 ? (mouseX - W / 2) : 0, ty = mouseY > -1000 ? (mouseY - H / 2) : 0;
+parX += (-tx * 0.012 - parX) * 0.06;
+parY += (-ty * 0.012 - parY) * 0.06;
+ctx.clearRect(0, 0, W, H);
+for (var i = 0; i < trains.length; i++) {
+var tr = trains[i];
+solve(tr, t);
+for (var j = 0; j < tr.gears.length; j++) drawAnnotations(tr.gears[j]);
+for (j = 0; j < tr.gears.length; j++) {
+drawGear(tr.gears[j]);
+if (W > 700 && tr.gears[j].lab !== null) drawLabel(tr.gears[j], tr.gears[j].lab);
+}
+}
+drawCrank(t);
+drawTitleBlock();
+}
+function loop(now) { frame(now); raf = requestAnimationFrame(loop); }
+function start() { if (!reduce && !raf) raf = requestAnimationFrame(loop); }
+function stop() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+function drawOnce() {
+if (drawPending) return;
+drawPending = true;
+requestAnimationFrame(function () { drawPending = false; frame(performance.now()); });
+}
+function initCanvas() {
+var dpr = Math.min(window.devicePixelRatio || 1, 2);
+W = window.innerWidth; H = window.innerHeight;
+canvas.width = Math.round(W * dpr);
+canvas.height = Math.round(H * dpr);
+ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+build();
+frame(performance.now());
+}
+app.addEventListener('scroll', function () {
+scrollY = app.scrollTop;
+if (reduce) drawOnce();
+}, { passive: true });
+doc.addEventListener('visibilitychange', function () { if (doc.hidden) stop(); else start(); });
+var lastW = window.innerWidth;
+window.addEventListener('resize', function () {
+if (window.innerWidth === lastW && Math.abs(window.innerHeight - H) < 140) return;
+lastW = window.innerWidth;
+clearTimeout(resizeTimer);
+resizeTimer = setTimeout(initCanvas, 150);
+});
+initCanvas();
+start();
+}
+})();
+</script>
