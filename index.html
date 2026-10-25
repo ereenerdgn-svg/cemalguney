@@ -1,15 +1,13 @@
-<!-- CEMAL GÜNEY — V9.1 (küçültülmüş sürüm)
-Dosyanın en altındaki script bölümünde CONFIG kısmı var: e-posta, LinkedIn, CV ve fotoğraf bağlantısını oradan değiştir. -->
 <style id="cg-global">
-html, body {
+html.cg-ready, html.cg-ready body {
 margin: 0 !important; padding: 0 !important;
 background: #0a0e14 !important; background-color: #0a0e14 !important;
 overflow: hidden !important; height: 100% !important;
 color-scheme: dark;
 }
-header, footer, nav.site-header, nav.main-menu,
-.header-wrapper, .footer-wrapper, .top-bar, .announcement-bar,
-.mobile-bottom-nav, .mobile-menu-platform, .scroll-top, .back-to-top { display: none !important; }
+html.cg-ready header, html.cg-ready footer, html.cg-ready nav.site-header, html.cg-ready nav.main-menu,
+html.cg-ready .header-wrapper, html.cg-ready .footer-wrapper, html.cg-ready .top-bar, html.cg-ready .announcement-bar,
+html.cg-ready .mobile-bottom-nav, html.cg-ready .mobile-menu-platform, html.cg-ready .scroll-top, html.cg-ready .back-to-top { display: none !important; }
 </style>
 <noscript><p style="color:#fff;background:#0a0e14;padding:20px;font-family:sans-serif">Bu sayfanın görüntülenmesi için JavaScript gereklidir.</p></noscript>
 <template id="cg-template">
@@ -300,7 +298,6 @@ transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 .tl-item { grid-template-columns: 1fr; gap: 6px; padding: 0 0 28px 30px; }
 .tl-item::before { left: 0; top: 4px; }
 .tl-date { text-align: left; justify-self: start; white-space: normal; }
-.proj-row { grid-template-columns: 1fr; }
 .btn { padding: 15px 26px; font-size: 0.8rem; letter-spacing: 1.2px; max-width: 100%; overflow-wrap: anywhere; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -511,15 +508,16 @@ transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 </template>
 <script>
 (function () {
+function cgInit() {
 'use strict';
 var CONFIG = {
 name: 'Cemal Güney',
 jobTitle: 'Makine Mühendisi',
-email: 'cemal.guney@ornekmail.com',   // <-- GERÇEK E-POSTAYLA DEĞİŞTİR
-linkedin: '',                          // örn. 'https://www.linkedin.com/in/kullanici-adi'  (boşsa buton gösterilmez)
-cvUrl: '',                             // örn. 'https://siteniz.com/cemal-guney-cv.pdf'    (boşsa buton gösterilmez)
-photo: '',                             // profil fotoğrafı (tam URL). Doluysa hero bölümünde görünür
-ogImage: '',                           // paylaşım önizleme görseli (tam URL), isteğe bağlı
+email: 'cemal.guney@ornekmail.com',
+linkedin: '',
+cvUrl: '',
+photo: '',
+ogImage: '',
 description: 'Makine Mühendisi Cemal Güney: CAD/CAM, CNC, üretim hattı kurulumu ve optimizasyonu alanlarında uluslararası saha deneyimi.'
 };
 var doc = document, html = doc.documentElement, body = doc.body, head = doc.head;
@@ -576,6 +574,7 @@ host.id = 'cg-host';
 body.appendChild(host);
 var root = host.attachShadow({ mode: 'open' });
 root.appendChild(tpl.content.cloneNode(true));
+html.classList.add('cg-ready');
 var HOST_STYLE = [
 ['position', 'fixed'], ['top', '0'], ['left', '0'], ['right', '0'], ['bottom', '0'],
 ['width', '100%'], ['height', '100%'], ['margin', '0'], ['padding', '0'],
@@ -625,9 +624,6 @@ if (CONFIG.email) actions.appendChild(makeBtn(CONFIG.email, 'mailto:' + CONFIG.e
 if (CONFIG.linkedin) actions.appendChild(makeBtn('LinkedIn', CONFIG.linkedin, '', true));
 if (CONFIG.cvUrl) actions.appendChild(makeBtn('CV İndir', CONFIG.cvUrl, '', true));
 if (CONFIG.cvUrl) root.getElementById('hero-actions').appendChild(makeBtn('CV İndir', CONFIG.cvUrl, '', true));
-if (CONFIG.email && CONFIG.email.indexOf('ornekmail') !== -1 && window.console) {
-console.warn('[Cemal Güney sayfası] CONFIG.email hâlâ örnek adres. Gerçek e-postayla değiştir.');
-}
 if (CONFIG.photo) {
 var portrait = root.getElementById('portrait');
 var img = doc.createElement('img');
@@ -640,7 +636,7 @@ root.getElementById('hero-wrap').classList.add('has-photo');
 Array.prototype.forEach.call(root.querySelectorAll('.level'), function (el) {
 var n = parseInt(el.getAttribute('data-l'), 10) || 0, d = doc.createElement('span');
 d.className = 'dots'; d.setAttribute('aria-hidden', 'true');
-for (var i = 1; i <= 3; i++) { var dot = doc.createElement('i'); if (i <= n) dot.className = 'on'; d.appendChild(dot); }
+for (var i = 1; i <= 3; i++) { var dt = doc.createElement('i'); if (i <= n) dt.className = 'on'; d.appendChild(dt); }
 el.appendChild(d);
 });
 function setMenu(open) {
@@ -711,14 +707,14 @@ if (finePointer) {
 var dot = root.getElementById('cursor-dot');
 var outline = root.getElementById('cursor-outline');
 var ox = 0, oy = 0, cursorRaf = null, firstMove = true;
-function cursorLoop() {
+var cursorLoop = function () {
 ox += (mouseX - ox) * 0.15;
 oy += (mouseY - oy) * 0.15;
 outline.style.transform = 'translate3d(' + ox + 'px,' + oy + 'px,0) translate(-50%,-50%)';
 if (Math.abs(mouseX - ox) > 0.1 || Math.abs(mouseY - oy) > 0.1) {
 cursorRaf = requestAnimationFrame(cursorLoop);
 } else { cursorRaf = null; }
-}
+};
 window.addEventListener('mousemove', function (e) {
 mouseX = e.clientX; mouseY = e.clientY;
 if (firstMove) { ox = mouseX; oy = mouseY; firstMove = false; app.classList.add('cursor-on'); }
@@ -741,7 +737,7 @@ var t0 = performance.now(), scrollY = 0, parX = 0, parY = 0;
 var ACC = (getComputedStyle(app).getPropertyValue('--accent-rgb') || '76, 180, 255').trim();
 var MONO = '11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
 var AM = 1;
-function col(a) { return 'rgba(' + ACC + ',' + (a * AM).toFixed(3) + ')'; }
+var col = function (a) { return 'rgba(' + ACC + ',' + (a * AM).toFixed(3) + ')'; };
 var TRAIN_DEFS = [
 { x: 0.84, y: 0.26, z: 36, speed: 0.20, kids: [
 { z: 18, at: 200, kids: [ { z: 27, at: 120 } ] },
@@ -751,12 +747,12 @@ var TRAIN_DEFS = [
 { z: 20, at: -35, lab: 90, kids: [ { z: 30, at: -10, kids: [ { z: 16, at: 40 } ] } ] }
 ] }
 ];
-function build() {
+var build = function () {
 M = Math.max(4.5, Math.min(10, Math.min(W, H) / 100));
 trains = TRAIN_DEFS.map(function (d) {
 var rootG = { z: d.z, m: M, r: M * d.z / 2, x: d.x * W, y: d.y * H, parent: null, theta: 0, a: 0, lab: null };
 var list = [rootG];
-(function walk(node, kids) {
+var walk = function (node, kids) {
 (kids || []).forEach(function (k) {
 var th = k.at * Math.PI / 180, rc = M * k.z / 2;
 var g = {
@@ -768,23 +764,24 @@ lab: (typeof k.lab === 'number') ? k.lab * Math.PI / 180 : null
 list.push(g);
 walk(g, k.kids);
 });
-})(rootG, d.kids);
+};
+walk(rootG, d.kids);
 return { speed: d.speed, gears: list };
 });
 crank = {
 x: (W < 700 ? 0.38 : 0.60) * W, y: 0.93 * H,
 r: 5 * M, L: 13 * M, w: 6 * M, h: 5 * M
 };
-}
-function solve(tr, t) {
+};
+var solve = function (tr, t) {
 var g0 = tr.gears[0], dir = tr.speed >= 0 ? 1 : -1;
 g0.a = tr.speed * t + dir * scrollY * 0.0032;
 for (var i = 1; i < tr.gears.length; i++) {
 var g = tr.gears[i], p = g.parent;
 g.a = g.theta + Math.PI + Math.PI / g.z - (p.a - g.theta) * p.z / g.z;
 }
-}
-function drawGear(g) {
+};
+var drawGear = function (g) {
 var N = g.z, p = TAU / N, m = g.m, rt = g.r + m, rr = g.r - 1.25 * m;
 var x = g.x + parX, y = g.y + parY, a = g.a, k, c;
 ctx.beginPath();
@@ -819,8 +816,8 @@ ctx.lineTo(x + Math.cos(a) * hub, y + Math.sin(a) * hub);
 ctx.stroke();
 ctx.fillStyle = col(0.85);
 ctx.beginPath(); ctx.arc(x, y, 2, 0, TAU); ctx.fill();
-}
-function drawAnnotations(g) {
+};
+var drawAnnotations = function (g) {
 var x = g.x + parX, y = g.y + parY, ext = g.r + g.m * 3;
 ctx.save();
 ctx.lineWidth = 1;
@@ -832,8 +829,8 @@ ctx.moveTo(x - ext, y); ctx.lineTo(x + ext, y);
 ctx.moveTo(x, y - ext); ctx.lineTo(x, y + ext);
 ctx.stroke();
 ctx.restore();
-}
-function drawLabel(g, ang) {
+};
+var drawLabel = function (g, ang) {
 var x = g.x + parX, y = g.y + parY, cs = Math.cos(ang), sn = Math.sin(ang);
 var r0 = g.r + g.m * 1.2, r1 = r0 + 34;
 var sx = x + cs * r0, sy = y + sn * r0, ex = x + cs * r1, ey = y + sn * r1;
@@ -848,8 +845,8 @@ ctx.fillStyle = col(0.75);
 ctx.textAlign = right ? 'left' : 'right';
 ctx.fillText(txt, right ? ex + 4 : ex - 4, ey - 5);
 ctx.restore();
-}
-function drawCrank(t) {
+};
+var drawCrank = function (t) {
 if (!crank) return;
 var cx = crank.x + parX, cy = crank.y + parY, r = crank.r, L = crank.L, w = crank.w, h = crank.h;
 var th = t * 0.9 + scrollY * 0.0032;
@@ -895,8 +892,8 @@ ctx.fillStyle = col(0.85);
 ctx.beginPath(); ctx.arc(cx, cy, 2.4, 0, TAU); ctx.fill();
 ctx.beginPath(); ctx.arc(pinX, pinY, 2.2, 0, TAU); ctx.fill();
 ctx.restore();
-}
-function drawTitleBlock() {
+};
+var drawTitleBlock = function () {
 if (W < 700) return;
 var bw = 270, bh = 40, x = W - bw - 20, y = H - bh - 18;
 ctx.save();
@@ -908,8 +905,8 @@ ctx.fillText('CEMAL GÜNEY — MAKİNE MÜHENDİSİ', x + 8, y + 14);
 ctx.fillStyle = col(0.5);
 ctx.fillText('ÖLÇEK 1:1   REV. A   A3', x + 8, y + 33);
 ctx.restore();
-}
-function frame(now) {
+};
+var frame = function (now) {
 var t = (now - t0) / 1000;
 var tx = mouseX > -1000 ? (mouseX - W / 2) : 0, ty = mouseY > -1000 ? (mouseY - H / 2) : 0;
 parX += (-tx * 0.012 - parX) * 0.06;
@@ -918,7 +915,8 @@ ctx.clearRect(0, 0, W, H);
 for (var i = 0; i < trains.length; i++) {
 var tr = trains[i];
 solve(tr, t);
-for (var j = 0; j < tr.gears.length; j++) drawAnnotations(tr.gears[j]);
+var j;
+for (j = 0; j < tr.gears.length; j++) drawAnnotations(tr.gears[j]);
 for (j = 0; j < tr.gears.length; j++) {
 drawGear(tr.gears[j]);
 if (W > 700 && tr.gears[j].lab !== null) drawLabel(tr.gears[j], tr.gears[j].lab);
@@ -926,16 +924,16 @@ if (W > 700 && tr.gears[j].lab !== null) drawLabel(tr.gears[j], tr.gears[j].lab)
 }
 drawCrank(t);
 drawTitleBlock();
-}
-function loop(now) { frame(now); raf = requestAnimationFrame(loop); }
-function start() { if (!reduce && !raf) raf = requestAnimationFrame(loop); }
-function stop() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
-function drawOnce() {
+};
+var loop = function (now) { frame(now); raf = requestAnimationFrame(loop); };
+var start = function () { if (!reduce && !raf) raf = requestAnimationFrame(loop); };
+var stop = function () { if (raf) { cancelAnimationFrame(raf); raf = null; } };
+var drawOnce = function () {
 if (drawPending) return;
 drawPending = true;
 requestAnimationFrame(function () { drawPending = false; frame(performance.now()); });
-}
-function initCanvas() {
+};
+var initCanvas = function () {
 var dpr = Math.min(window.devicePixelRatio || 1, 2);
 W = window.innerWidth; H = window.innerHeight;
 canvas.width = Math.round(W * dpr);
@@ -943,7 +941,7 @@ canvas.height = Math.round(H * dpr);
 ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 build();
 frame(performance.now());
-}
+};
 app.addEventListener('scroll', function () {
 scrollY = app.scrollTop;
 if (reduce) drawOnce();
@@ -959,5 +957,8 @@ resizeTimer = setTimeout(initCanvas, 150);
 initCanvas();
 start();
 }
+}
+if (document.body && document.readyState !== 'loading') { cgInit(); }
+else { document.addEventListener('DOMContentLoaded', cgInit); }
 })();
 </script>
