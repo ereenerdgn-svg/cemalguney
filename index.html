@@ -153,13 +153,13 @@ position: relative; overflow: hidden; isolation: isolate; z-index: 1; transition
 }
 .btn::before {
 content: ''; position: absolute; top: 100%; left: 0; width: 100%; height: 100%;
-background: var(--accent); transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: -1;
+background: var(--accent); transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: -1; pointer-events: none;
 }
 .btn:focus-visible { color: var(--bg); }
 .btn:focus-visible::before { top: 0; }
 .btn.solid { background: var(--accent); color: var(--bg); }
 .btn.solid::before { background: var(--text); }
-.btn svg { width: 20px; height: 20px; flex: none; }
+.btn svg { width: 20px; height: 20px; flex: none; pointer-events: none; }
 .btn.plain { text-transform: none; letter-spacing: 1px; }
 @media (hover: hover) {
 .btn:hover { color: var(--bg); }
@@ -237,12 +237,8 @@ transition: opacity 0.8s ease, visibility 0.8s;
 .intro.gone { opacity: 0; visibility: hidden; pointer-events: none; }
 .intro .lang { position: absolute; top: 22px; right: 22px; }
 .intro-hello { font-family: var(--font-head); color: var(--text); font-size: clamp(4rem, 14vw, 10rem); font-weight: 700; text-transform: uppercase; letter-spacing: 4px; line-height: 1; }
-.intro-count { color: var(--accent); font-size: 1.1rem; font-weight: 800; letter-spacing: 3px; font-variant-numeric: tabular-nums; }
 .intro-bar { width: min(260px, 60vw); height: 2px; background: var(--line); overflow: hidden; }
 .intro-bar i { display: block; height: 100%; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
-.intro-tap { color: #c4cfdd; font-size: 0.95rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; opacity: 0; transition: opacity 0.6s; margin-top: 22px; }
-.intro.ready .intro-tap { opacity: 1; }
-.intro.ready { cursor: pointer; }
 .skills li { flex-wrap: wrap; }
 .app { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 .card, .proj-list, .prose, .hero-copy, .sec-title, .hero-title { min-width: 0; overflow-wrap: anywhere; }
@@ -401,14 +397,13 @@ transition: opacity 0.8s ease, visibility 0.8s;
 </div></section>
 
 </main>
-<div class="intro" id="intro" role="button" tabindex="0">
+<div class="intro" id="intro">
 <div class="lang" role="group" aria-label="Dil / Language">
 <button type="button" data-lang="tr">TR</button>
 <button type="button" data-lang="en">EN</button>
 </div>
 <div class="intro-hello" data-i="hello"></div>
 <div class="intro-bar"><i id="intro-bar"></i></div>
-<div class="intro-tap" data-i="tap"></div>
 </div>
 </div>
 </template>
@@ -418,9 +413,9 @@ function cgInit() {
 'use strict';
 var CONFIG = {
 name: 'Cemal Güney',
-email: 'cemal.guney@ornekmail.com',
-whatsapp: '905000000000',
-linkedin: 'https://www.linkedin.com/in/kullanici-adi',
+email: 'cemalgney@gmail.com',
+whatsapp: '905302636708',
+linkedin: 'https://www.linkedin.com/in/cemal-g%C3%BCney-703b43195',
 cvUrl: ''
 };
 var doc = document, html = doc.documentElement, body = doc.body, head = doc.head;
@@ -430,7 +425,7 @@ function L(tr, en) { return { tr: tr, en: en }; }
 var PAGES = ['home', 'about', 'education', 'projects', 'revisions', 'abroad', 'career', 'expertise', 'references', 'contact'];
 var TXT = {
 tr: {
-hello: 'Merhaba', tap: 'Geçmek için dokunun', menu: 'Menü', close: 'Kapat', next: 'Sonraki',
+hello: 'Merhaba', menu: 'Menü', close: 'Kapat', next: 'Sonraki',
 p_home: 'Anasayfa', p_about: 'Hakkımda', p_education: 'Eğitim', p_projects: 'Projeler',
 p_revisions: 'Mühendislik Revizyonları', p_abroad: 'Yurt Dışı Deneyimi', p_career: 'Kariyer Yolculuğu',
 p_expertise: 'Uzmanlık Alanları', p_references: 'Referanslar', p_contact: 'İletişim',
@@ -446,7 +441,7 @@ cv: 'CV İndir', wa: 'WhatsApp', li: 'LinkedIn',
 docTitle: 'Cemal Güney | Makine Mühendisi'
 },
 en: {
-hello: 'Hello', tap: 'Tap to continue', menu: 'Menu', close: 'Close', next: 'Next',
+hello: 'Hello', menu: 'Menu', close: 'Close', next: 'Next',
 p_home: 'Home', p_about: 'About Me', p_education: 'Education', p_projects: 'Projects',
 p_revisions: 'Engineering Revisions', p_abroad: 'International Experience', p_career: 'Career Path',
 p_expertise: 'Areas of Expertise', p_references: 'References', p_contact: 'Contact',
@@ -646,6 +641,7 @@ REFS.forEach(function (r) {
 var c = el('div', 'card'); c.appendChild(el('span', 'tag', tx(r.role))); c.appendChild(el('h3', '', r.name)); c.appendChild(el('p', '', r.org)); box.appendChild(c);
 });
 
+/* İletişim butonları: düz, doğrudan <a href> bağlantıları */
 box = root.getElementById('contact-actions'); box.textContent = '';
 function btn(label, href, icon, solid, ext, plain) {
 var a = el('a', 'btn' + (solid ? ' solid' : '') + (plain ? ' plain' : '')); a.href = href;
@@ -695,6 +691,22 @@ var top = target.getBoundingClientRect().top - app.getBoundingClientRect().top +
 app.scrollTo({ top: id === 'home' ? 0 : top, behavior: (reduce || instant) ? 'auto' : 'smooth' });
 }
 
+/* Dış bağlantılar (mailto / WhatsApp / LinkedIn / CV):
+   olay sayfa/platform betiklerine ulaşmasın diye yayılımı durdurur.
+   Tarayıcının kendi bağlantı davranışı çalışır; biri engellediyse elle açılır. */
+root.addEventListener('click', function (e) {
+var a = e.target.closest ? e.target.closest('a[href]') : null;
+if (!a || a.hasAttribute('data-go')) return;
+var h = a.getAttribute('href') || '';
+if (!/^(mailto:|tel:|https?:)/i.test(h)) return;
+e.stopPropagation();
+if (!e.defaultPrevented) return;
+if (/^(mailto:|tel:)/i.test(h)) { window.location.href = h; return; }
+var w = null;
+try { w = window.open(h, '_blank'); if (w) w.opener = null; } catch (err) {}
+if (!w) window.location.href = h;
+}, true);
+
 root.addEventListener('click', function (e) {
 var t = e.target, a = t.closest ? t.closest('[data-go]') : null;
 if (a) { e.preventDefault(); goTo(a.getAttribute('data-go')); return; }
@@ -738,9 +750,31 @@ var max = app.scrollHeight - app.clientHeight;
 progress.style.transform = 'scaleX(' + (max > 0 ? app.scrollTop / max : 0) + ')';
 }, { passive: true });
 
-var introDone = false, introReady = false;
+/* Anasayfa sonu → otomatik sonraki bölüm (Hakkımda); yukarı kaydırınca geri döner */
+var autoNavLock = false, lastAutoTop = 0;
+var homeSec = root.getElementById('home');
+app.addEventListener('scroll', function () {
+var d = app.scrollTop - lastAutoTop;
+lastAutoTop = app.scrollTop;
+if (!started || autoNavLock || app.classList.contains('menu-open') || !d) return;
+var homeEnd = homeSec.offsetTop + homeSec.offsetHeight;
+var viewBottom = app.scrollTop + app.clientHeight;
+if (d > 0 && activeId === 'home' && viewBottom >= homeEnd - 40 && app.scrollTop < homeEnd - 80) {
+autoNavLock = true;
+goTo('about');
+setTimeout(function () { autoNavLock = false; }, 1300);
+} else if (d < 0 && activeId === 'about' && app.scrollTop < homeEnd - 10 && app.scrollTop > 0) {
+autoNavLock = true;
+goTo('home');
+setTimeout(function () { autoNavLock = false; }, 1300);
+}
+}, { passive: true });
+
+/* Açılış ekranı: sayaç bitince tıklama beklemeden otomatik geçer.
+   İsteyen açılış ekranına dokunarak da hemen geçebilir. */
+var introDone = false;
 function enter() {
-if (!introReady || introDone) return;
+if (introDone) return;
 introDone = true;
 intro.classList.add('gone');
 started = true;
@@ -754,15 +788,20 @@ intro.addEventListener('click', function (e) {
 if (e.target.closest && e.target.closest('[data-lang]')) return;
 enter();
 });
-intro.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); enter(); } });
 var helloEl = root.querySelector('.intro-hello');
 var barEl = root.getElementById('intro-bar');
 var HELLOS = ['Merhaba', 'Hello', 'Hallo', 'Привет', 'مرحبا', 'Bonjour', 'Hola', 'Ciao', 'こんにちは', '你好', 'Olá'];
-function finishCount() { helloEl.textContent = T('hello'); barEl.style.transform = 'scaleX(1)'; introReady = true; intro.classList.add('ready'); try { intro.focus(); } catch (e) {} }
+function finishCount() {
+if (introDone) return;
+helloEl.textContent = T('hello');
+barEl.style.transform = 'scaleX(1)';
+setTimeout(enter, reduce ? 200 : 450);
+}
 if (reduce) { finishCount(); }
 else {
 var c0 = performance.now(), DUR = 2600, STEP = 230, lastIdx = -1;
 var tick = function (now) {
+if (introDone) return;
 var p = Math.min(1, (now - c0) / DUR), e3 = 1 - Math.pow(1 - p, 3);
 barEl.style.transform = 'scaleX(' + e3 + ')';
 var idx = Math.floor((now - c0) / STEP);
