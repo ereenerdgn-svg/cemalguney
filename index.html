@@ -10,7 +10,7 @@ html.cg-ready .header-wrapper, html.cg-ready .footer-wrapper, html.cg-ready .top
 html.cg-ready .mobile-bottom-nav, html.cg-ready .mobile-menu-platform, html.cg-ready .scroll-top, html.cg-ready .back-to-top { display: none !important; }
 </style>
 <noscript><p style="color:#fff;background:#0a0e14;padding:20px;font-family:sans-serif">Bu sayfanın görüntülenmesi için JavaScript gereklidir.</p></noscript>
-<template id="cg-template">
+<template id="cg-template-v6">
 <style>
 :host { all: initial; }
 *, *::before, *::after { box-sizing: border-box; }
@@ -240,6 +240,16 @@ transition: opacity 0.8s ease, visibility 0.8s;
 .intro-bar { width: min(260px, 60vw); height: 2px; background: var(--line); overflow: hidden; }
 .intro-bar i { display: block; height: 100%; width: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
 .skills li { flex-wrap: wrap; }
+.contact-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 28px; margin-top: 26px; }
+.info-link { color: var(--body); font-weight: 700; font-size: 1rem; letter-spacing: 0.4px; overflow-wrap: anywhere; transition: color 0.3s; }
+.info-link:hover { color: var(--accent); }
+.toast {
+position: fixed; left: 50%; bottom: 28px; z-index: 500; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+max-width: calc(100% - 32px); padding: 12px 22px; border: 1px solid var(--accent); border-radius: 100px;
+background: rgba(var(--surface-rgb), 0.98); color: var(--text); font-size: 0.95rem; font-weight: 700; text-align: center;
+transition: opacity 0.3s, transform 0.3s;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
 .app { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 .card, .proj-list, .prose, .hero-copy, .sec-title, .hero-title { min-width: 0; overflow-wrap: anywhere; }
 @media (min-width: 1500px) {
@@ -393,6 +403,7 @@ transition: opacity 0.8s ease, visibility 0.8s;
 <h2 class="sec-title" data-i="p_contact"></h2>
 <p class="hero-desc" data-i="contactText"></p>
 <div class="contact-actions" id="contact-actions"></div>
+<div class="contact-info" id="contact-info"></div>
 <p class="closing" data-i="closing"></p>
 </div></section>
 
@@ -411,9 +422,12 @@ transition: opacity 0.8s ease, visibility 0.8s;
 (function () {
 function cgInit() {
 'use strict';
+try { console.info('[Güney] sürüm 6 yüklendi'); } catch (e0) {}
 var CONFIG = {
 name: 'Cemal Güney',
 email: 'cemalgney@gmail.com',
+phone: '+905302636708',
+phoneText: '+90 530 263 67 08',
 whatsapp: '905302636708',
 linkedin: 'https://www.linkedin.com/in/cemal-g%C3%BCney-703b43195',
 cvUrl: ''
@@ -425,7 +439,7 @@ function L(tr, en) { return { tr: tr, en: en }; }
 var PAGES = ['home', 'about', 'education', 'projects', 'revisions', 'abroad', 'career', 'expertise', 'references', 'contact'];
 var TXT = {
 tr: {
-hello: 'Merhaba', menu: 'Menü', close: 'Kapat', next: 'Sonraki',
+hello: 'Merhaba', menu: 'Menü', close: 'Kapat', next: 'Sonraki', call: 'Ara', copied: 'Kopyalandı',
 p_home: 'Anasayfa', p_about: 'Hakkımda', p_education: 'Eğitim', p_projects: 'Projeler',
 p_revisions: 'Mühendislik Revizyonları', p_abroad: 'Yurt Dışı Deneyimi', p_career: 'Kariyer Yolculuğu',
 p_expertise: 'Uzmanlık Alanları', p_references: 'Referanslar', p_contact: 'İletişim',
@@ -441,7 +455,7 @@ cv: 'CV İndir', wa: 'WhatsApp', li: 'LinkedIn',
 docTitle: 'Cemal Güney | Makine Mühendisi'
 },
 en: {
-hello: 'Hello', menu: 'Menu', close: 'Close', next: 'Next',
+hello: 'Hello', menu: 'Menu', close: 'Close', next: 'Next', call: 'Call', copied: 'Copied',
 p_home: 'Home', p_about: 'About Me', p_education: 'Education', p_projects: 'Projects',
 p_revisions: 'Engineering Revisions', p_abroad: 'International Experience', p_career: 'Career Path',
 p_expertise: 'Areas of Expertise', p_references: 'References', p_contact: 'Contact',
@@ -503,6 +517,7 @@ var REFS = [
 var ICONS = {
 mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>',
 wa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1.2-4.1A8 8 0 1 1 8.2 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1.2-1.4-1.9-1-0.9 0.7c-0.9-0.4-1.6-1.1-2-2l0.7-0.9-1-1.9z"/></svg>',
+phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>',
 li: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 10.5V16M8 7.8v0.1M12 16v-3.2a2.3 2.3 0 0 1 4.6 0V16M12 10.5V16"/></svg>'
 };
 
@@ -527,7 +542,7 @@ addLink('cg-font', 'stylesheet', 'https://fonts.googleapis.com/css2?family=Barlo
 
 var old = doc.getElementById('cg-host');
 if (old && old.parentNode) old.parentNode.removeChild(old);
-var tpl = doc.getElementById('cg-template');
+var tpl = doc.getElementById('cg-template-v6');
 if (!tpl) return;
 var host = doc.createElement('div');
 host.id = 'cg-host';
@@ -650,8 +665,17 @@ a.innerHTML = icon; a.appendChild(doc.createTextNode(label)); box.appendChild(a)
 }
 if (CONFIG.email) btn(CONFIG.email, 'mailto:' + CONFIG.email, ICONS.mail, true, false, true);
 if (CONFIG.whatsapp) btn(T('wa'), 'https://wa.me/' + CONFIG.whatsapp, ICONS.wa, false, true, false);
+if (CONFIG.phone) btn(T('call'), 'tel:' + CONFIG.phone, ICONS.phone, false, false, false);
 if (CONFIG.linkedin) btn(T('li'), CONFIG.linkedin, ICONS.li, false, true, false);
 if (CONFIG.cvUrl) btn(T('cv'), CONFIG.cvUrl, '', false, true, false);
+
+/* Düğmeler çalışmasa bile bilgiler her zaman görünür ve kopyalanabilir */
+var info = root.getElementById('contact-info'); info.textContent = '';
+function infoLink(label, href, copy) {
+var a = el('a', 'info-link', label); a.href = href; a.setAttribute('data-copy', copy); info.appendChild(a);
+}
+if (CONFIG.email) infoLink(CONFIG.email, 'mailto:' + CONFIG.email, CONFIG.email);
+if (CONFIG.phone) infoLink(CONFIG.phoneText || CONFIG.phone, 'tel:' + CONFIG.phone, CONFIG.phoneText || CONFIG.phone);
 
 menuList.textContent = '';
 PAGES.forEach(function (id) {
@@ -691,14 +715,34 @@ var top = target.getBoundingClientRect().top - app.getBoundingClientRect().top +
 app.scrollTo({ top: id === 'home' ? 0 : top, behavior: (reduce || instant) ? 'auto' : 'smooth' });
 }
 
-/* Dış bağlantılar (mailto / WhatsApp / LinkedIn / CV):
+var toastEl = null, toastTimer = null;
+function toast(msg) {
+if (!toastEl) { toastEl = el('div', 'toast'); toastEl.setAttribute('role', 'status'); app.appendChild(toastEl); }
+toastEl.textContent = msg; toastEl.classList.add('show');
+clearTimeout(toastTimer); toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2200);
+}
+function copyText(txt) {
+var done = function () { toast(T('copied') + ': ' + txt); };
+try {
+if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(done, function () { legacy(); }); return; }
+} catch (e1) {}
+legacy();
+function legacy() {
+try {
+var ta = doc.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+body.appendChild(ta); ta.select(); doc.execCommand('copy'); body.removeChild(ta); done();
+} catch (e2) {}
+}
+}
+/* Dış bağlantılar (mailto / tel / WhatsApp / LinkedIn / CV):
    olay sayfa/platform betiklerine ulaşmasın diye yayılımı durdurur.
-   Tarayıcının kendi bağlantı davranışı çalışır; biri engellediyse elle açılır. */
+   E-posta ve telefon ayrıca panoya kopyalanır (cihazda uygulama yoksa da kullanılabilsin). */
 root.addEventListener('click', function (e) {
 var a = e.target.closest ? e.target.closest('a[href]') : null;
 if (!a || a.hasAttribute('data-go')) return;
 var h = a.getAttribute('href') || '';
 if (!/^(mailto:|tel:|https?:)/i.test(h)) return;
+if (/^(mailto:|tel:)/i.test(h)) copyText(a.getAttribute('data-copy') || h.replace(/^(mailto:|tel:)/i, ''));
 e.stopPropagation();
 if (!e.defaultPrevented) return;
 if (/^(mailto:|tel:)/i.test(h)) { window.location.href = h; return; }
@@ -797,19 +841,21 @@ helloEl.textContent = T('hello');
 barEl.style.transform = 'scaleX(1)';
 setTimeout(enter, reduce ? 200 : 450);
 }
+/* Zamanlayıcı tabanlıdır (requestAnimationFrame değil): sayfa arka planda ya da
+   gömülü çerçevede olsa bile açılış mutlaka kendiliğinden geçer. */
 if (reduce) { finishCount(); }
 else {
-var c0 = performance.now(), DUR = 2600, STEP = 230, lastIdx = -1;
-var tick = function (now) {
-if (introDone) return;
-var p = Math.min(1, (now - c0) / DUR), e3 = 1 - Math.pow(1 - p, 3);
+var c0 = Date.now(), DUR = 2600, STEP = 230, lastIdx = -1;
+var introTimer = setInterval(function () {
+if (introDone) { clearInterval(introTimer); return; }
+var el0 = Date.now() - c0, p = Math.min(1, el0 / DUR), e3 = 1 - Math.pow(1 - p, 3);
 barEl.style.transform = 'scaleX(' + e3 + ')';
-var idx = Math.floor((now - c0) / STEP);
+var idx = Math.floor(el0 / STEP);
 if (p < 1 && idx !== lastIdx) { lastIdx = idx; helloEl.textContent = HELLOS[idx % HELLOS.length]; }
-if (p < 1) requestAnimationFrame(tick); else finishCount();
-};
-requestAnimationFrame(tick);
+if (p >= 1) { clearInterval(introTimer); finishCount(); }
+}, 60);
 }
+setTimeout(function () { if (!introDone) enter(); }, 4200);
 
 var mouseX = -9999, mouseY = -9999;
 var finePointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
