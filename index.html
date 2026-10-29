@@ -315,7 +315,7 @@ transition: opacity 0.3s, transform 0.3s;
 .card, .btn::before, .luxury-nav, .mobile-menu, .next-link .arrow, .intro { transition: none; }
 }
 </style>
-<div class="app locked" id="app">
+<div class="app locked" id="app" translate="no">
 <div class="grid-bg" aria-hidden="true"></div>
 <canvas id="gears" aria-hidden="true"></canvas>
 <div class="vignette" aria-hidden="true"></div>
@@ -326,8 +326,8 @@ transition: opacity 0.3s, transform 0.3s;
 <a href="#home" class="brand-name" data-go="home" aria-label="Güney">Güney</a>
 <div class="tools">
 <div class="lang" role="group" aria-label="Dil / Language">
-<button type="button" data-lang="tr">TR</button>
-<button type="button" data-lang="en">EN</button>
+<button type="button" data-lang="tr" lang="tr" translate="no" aria-label="Türkçe">TR</button>
+<button type="button" data-lang="en" lang="en" translate="no" aria-label="English">EN</button>
 </div>
 <button type="button" class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="mobile-menu"></button>
 </div>
@@ -410,8 +410,8 @@ transition: opacity 0.3s, transform 0.3s;
 </main>
 <div class="intro" id="intro">
 <div class="lang" role="group" aria-label="Dil / Language">
-<button type="button" data-lang="tr">TR</button>
-<button type="button" data-lang="en">EN</button>
+<button type="button" data-lang="tr" lang="tr" translate="no" aria-label="Türkçe">TR</button>
+<button type="button" data-lang="en" lang="en" translate="no" aria-label="English">EN</button>
 </div>
 <div class="intro-hello" data-i="hello"></div>
 <div class="intro-bar"><i id="intro-bar"></i></div>
@@ -533,6 +533,7 @@ var l = doc.createElement('link'); l.id = id; l.rel = rel; l.href = href;
 if (cors) l.crossOrigin = 'anonymous';
 head.appendChild(l);
 }
+if (!head.querySelector('meta[name="google"][content="notranslate"]')) { var nt = doc.createElement('meta'); nt.setAttribute('name', 'google'); nt.setAttribute('content', 'notranslate'); head.appendChild(nt); }
 var vp = head.querySelector('meta[name="viewport"]');
 if (!vp) { vp = doc.createElement('meta'); vp.setAttribute('name', 'viewport'); head.appendChild(vp); }
 vp.setAttribute('content', 'width=device-width, initial-scale=1, viewport-fit=cover');
@@ -545,7 +546,7 @@ if (old && old.parentNode) old.parentNode.removeChild(old);
 var tpl = doc.getElementById('cg-template-v6');
 if (!tpl) return;
 var host = doc.createElement('div');
-host.id = 'cg-host';
+host.id = 'cg-host'; host.setAttribute('translate', 'no');
 body.appendChild(host);
 var root = host.attachShadow({ mode: 'open' });
 root.appendChild(tpl.content.cloneNode(true));
